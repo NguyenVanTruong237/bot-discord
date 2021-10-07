@@ -53,5 +53,20 @@ namespace bot_disord.Modules
             await Task.Delay(2500);
             await message.DeleteAsync();
         }
+        [Command("Sever")]
+        public async Task Sever()
+        {
+            var builder = new MyBotEmbedBuilder()
+                .WithThumbnailUrl(Context.Guild.IconUrl)
+                .WithDescription("Thông tin sever")
+                .WithTitle($" Sever: {Context.Guild.Name}")
+                .AddField("Ngày tạo", Context.Guild.CreatedAt.ToString("dd/MM/yyyy"), true)
+                .AddField("Tổng mem", (Context.Guild as SocketGuild).MemberCount, true)
+                .AddField("Mem online", (Context.Guild as SocketGuild)
+                .Users.Where(x => x.Status != UserStatus.Offline).Count(), true);
+
+            var embed = builder.Build();
+            await Context.Channel.SendMessageAsync(null, false, embed);
+        }
     }
 }
