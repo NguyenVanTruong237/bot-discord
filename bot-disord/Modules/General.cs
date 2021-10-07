@@ -41,18 +41,7 @@ namespace bot_disord.Modules
 
             await ReplyAsync(embed: embed);
         }
-        [Command("xoa")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
-        public async Task Purge (int amount)
-        {
-
-            var messages = await Context.Channel.GetMessagesAsync(amount+1).FlattenAsync();
-            await (Context.Channel as SocketTextChannel).DeleteMessagesAsync(messages);
-
-            var message = await Context.Channel.SendMessageAsync($" Đã xóa {messages.Count()} tin nhắn!");
-            await Task.Delay(2500);
-            await message.DeleteAsync();
-        }
+        
         [Command("Sever")]
         public async Task Sever()
         {
