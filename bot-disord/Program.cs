@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using bot_disord.Services;
+using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -49,8 +50,8 @@ namespace bot_disord
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    //services
-                    //.AddHostedService<CommandHandler>();
+                    services
+                    .AddHostedService<CommandHandler>();
                 })
                 .UseConsoleLifetime();
             var host = builder.Build();
