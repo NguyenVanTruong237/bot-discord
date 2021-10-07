@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using bot_disord.Common;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
@@ -27,11 +28,16 @@ namespace bot_disord.Modules
             {
                 socketGuidUser = Context.User as SocketGuildUser;
             }
+            var embed = new MyBotEmbedBuilder()
+                .WithTitle("Info của mày nè:")
+                .AddField("Id nè", socketGuidUser.Id, true)
+                .AddField("Tên nè",$"{socketGuidUser.Username}#{socketGuidUser.Discriminator}", true)
+                .AddField("Ngày tạo", socketGuidUser.CreatedAt, true)
+                .WithThumbnailUrl(socketGuidUser.GetAvatarUrl() ?? socketGuidUser.GetDefaultAvatarUrl())
+                .WithCurrentTimestamp()
+                .Build();
 
-            await ReplyAsync($"ID: { socketGuidUser.Id}\n" +
-                $"Name: {socketGuidUser .Username}#{socketGuidUser.Discriminator}\n" +
-                $"CreateDate:{ socketGuidUser.CreatedAt}"
-                );
+            await ReplyAsync(embed: embed);
         }
     }
 }
