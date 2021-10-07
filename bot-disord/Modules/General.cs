@@ -32,12 +32,26 @@ namespace bot_disord.Modules
                 .WithTitle("Info của mày nè:")
                 .AddField("Id nè", socketGuidUser.Id, true)
                 .AddField("Tên nè",$"{socketGuidUser.Username}#{socketGuidUser.Discriminator}", true)
-                .AddField("Ngày tạo", socketGuidUser.CreatedAt, true)
+                .AddField("Ngày tạo acc", socketGuidUser.CreatedAt.ToString("dd/MM/yyyy"), true)
+                .AddField("Ngày vào sever", socketGuidUser.JoinedAt.Value.ToString("dd/MM/yyyy"), true)
+                .AddField("Role", string.Join(" ",socketGuidUser.Roles.Select(x => x.Mention)))
                 .WithThumbnailUrl(socketGuidUser.GetAvatarUrl() ?? socketGuidUser.GetDefaultAvatarUrl())
                 .WithCurrentTimestamp()
                 .Build();
 
             await ReplyAsync(embed: embed);
+        }
+        [Command("xoa")]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task Purge (int amount)
+        {
+
+            var messages = await Context.Channel.GetMessagesAsync(amount+1).FlattenAsync();
+            await (Context.Channel as SocketTextChannel).DeleteMessagesAsync(messages);
+
+            var message = await Context.Channel.SendMessageAsync($" Đã xóa {messages.Count()} tin nhắn!");
+            await Task.Delay(2500);
+            await message.DeleteAsync();
         }
     }
 }
