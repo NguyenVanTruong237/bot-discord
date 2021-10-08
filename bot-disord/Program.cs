@@ -57,6 +57,7 @@ namespace bot_disord
                 {
                     services.AddHostedService<CommandHandler>();
                     services.AddDbContext<ApplicationDbContext>();
+                    services.AddSingleton<Severs>();
                     services.AddSingleton<Images>();
                 })
                 .UseConsoleLifetime();

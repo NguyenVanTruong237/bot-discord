@@ -14,8 +14,10 @@ namespace Infrastructure
 
         public class Sever
         {
-            public int Id { get; set; }
+            public ulong Id { get; set; }
             public string Prefix { get; set; }
+            public ulong Welcome { get; set; }
+            public string Background { get; set; }
         }
     }
 }

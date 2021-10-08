@@ -20,13 +20,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.ApplicationDbContext+Sever", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<decimal>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("decimal(20,0)")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+                    b.Property<string>("Background")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prefix")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Welcome")
+                        .HasColumnType("decimal(20,0)");
 
                     b.HasKey("Id");
 

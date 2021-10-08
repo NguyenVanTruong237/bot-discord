@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Migrations
 {
-    public partial class InitialDb : Migration
+    public partial class DbBot : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,9 +10,10 @@ namespace Infrastructure.Migrations
                 name: "Severs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Prefix = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    Prefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Welcome = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    Background = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

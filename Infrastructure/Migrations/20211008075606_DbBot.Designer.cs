@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211008054406_InitialDb")]
-    partial class InitialDb
+    [Migration("20211008075606_DbBot")]
+    partial class DbBot
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,13 +22,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.ApplicationDbContext+Sever", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<decimal>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("decimal(20,0)")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+                    b.Property<string>("Background")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prefix")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Welcome")
+                        .HasColumnType("decimal(20,0)");
 
                     b.HasKey("Id");
 
