@@ -1,9 +1,11 @@
 ﻿using bot_disord.Common;
+using bot_disord.Utilities;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,13 @@ namespace bot_disord.Modules
 {
     public class General : ModuleBase<SocketCommandContext>
     {
+        private readonly Images _images;
+
+        public General(Images images)
+        {
+            _images = images;
+        }
+
         [Command("ping")]
         [Alias("p")] //command ghi tắt
         [RequireUserPermission(GuildPermission.Administrator)] //chỉ admin mới gọi command này đc
@@ -57,5 +66,15 @@ namespace bot_disord.Modules
             var embed = builder.Build();
             await Context.Channel.SendMessageAsync(null, false, embed);
         }
+
+
+        [Command("image", RunMode =RunMode.Async)]
+        public async Task Image(SocketGuildUser user)
+        {
+            var path = await _images.CreateImageAsync(user);
+            await Context.Channel.SendFileAsync(path);
+            File.Delete(path);
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using bot_disord.Services;
+using bot_disord.Utilities;
 using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
@@ -56,6 +57,7 @@ namespace bot_disord
                 {
                     services.AddHostedService<CommandHandler>();
                     services.AddDbContext<ApplicationDbContext>();
+                    services.AddSingleton<Images>();
                 })
                 .UseConsoleLifetime();
             var host = builder.Build();
