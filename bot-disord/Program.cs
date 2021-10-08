@@ -3,6 +3,8 @@ using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
+using Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +19,8 @@ namespace bot_disord
     {
         static async Task Main()
         {
+
+    
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration(x =>
                 {
@@ -50,8 +54,8 @@ namespace bot_disord
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services
-                    .AddHostedService<CommandHandler>();
+                    services.AddHostedService<CommandHandler>();
+                    services.AddDbContext<ApplicationDbContext>();
                 })
                 .UseConsoleLifetime();
             var host = builder.Build();
