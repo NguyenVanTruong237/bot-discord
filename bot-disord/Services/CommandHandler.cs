@@ -34,11 +34,38 @@ namespace bot_disord.Services
         public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
             _client.MessageReceived += OnMessageReceived;
+            _client.ChannelCreated += OnChannelCreated;
+            _client.JoinedGuild += OnJoinedGuid;            // event bot discord join sever
+            _client.ReactionAdded += OnReactionAdded;       //event react message to get role
+
             _service.CommandExecuted += OnCommandExecuted;
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
         }
 
-        private async Task OnCommandExecuted(Optional<CommandInfo> commandInfo  //Lấy info theo @Name
+        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
+        {
+            if (arg3.MessageId != 895866399568842832) return;
+            if (arg3.Emote.Name != "💩") return;
+
+            var role = (arg2 as SocketGuildChannel).Guild.Roles.FirstOrDefault(c => c.Id == 895652719241625661);
+            await (arg3.User.Value as SocketGuildUser).AddRoleAsync(role);
+        }
+
+        private async Task OnJoinedGuid(SocketGuild arg)
+        {
+            await arg.DefaultChannel.SendMessageAsync("Thanks for using.");
+        }
+
+        private async Task OnChannelCreated(SocketChannel arg)  //event tạo channel text
+        {
+            if ((arg as ITextChannel) == null) return;
+
+            var channel = arg as ITextChannel;
+            await channel.SendMessageAsync("The event test called");
+
+        }
+
+        private async Task OnCommandExecuted(Optional<CommandInfo> commandInfo  //thực thi command
             ,ICommandContext commandContext,
             IResult result)
         {
@@ -48,7 +75,7 @@ namespace bot_disord.Services
             }
             await commandContext.Channel.SendMessageAsync(result.ErrorReason);
         }
-        private async Task OnMessageReceived(SocketMessage socketMessage)
+        private async Task OnMessageReceived(SocketMessage socketMessage)   // nhận message từ user
         {
             if (!(socketMessage is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;

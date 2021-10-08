@@ -29,8 +29,8 @@ namespace bot_disord.Modules
                 socketGuidUser = Context.User as SocketGuildUser;
             }
             var embed = new MyBotEmbedBuilder()
-                .WithTitle("Info của mày nè:")
-                .AddField("Id nè", socketGuidUser.Id, true)
+                .WithTitle("Info của bạn nè:")
+                .AddField("Id", socketGuidUser.Id, true)
                 .AddField("Tên nè",$"{socketGuidUser.Username}#{socketGuidUser.Discriminator}", true)
                 .AddField("Ngày tạo acc", socketGuidUser.CreatedAt.ToString("dd/MM/yyyy"), true)
                 .AddField("Ngày vào sever", socketGuidUser.JoinedAt.Value.ToString("dd/MM/yyyy"), true)
