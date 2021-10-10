@@ -12,6 +12,7 @@ namespace bot_disord.Modules
     public class Moderation : ModuleBase<SocketCommandContext>
     {
         [Command("xoa")]
+        [RequireRole("test")]
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task Purge(int amount)
         {

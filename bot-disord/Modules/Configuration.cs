@@ -104,6 +104,7 @@ namespace bot_disord.Modules
         }
 
         [Command("image", RunMode = RunMode.Async)]
+        [RequireOwner]
         public async Task Image(SocketGuildUser user)
         {
             var path = await _images.CreateImageAsync(user);
@@ -112,6 +113,7 @@ namespace bot_disord.Modules
         }
 
         [Command("ping")]
+        [RequireRole("test")]
         [Alias("p")] //command ghi tắt
         [RequireUserPermission(GuildPermission.Administrator)] //chỉ admin mới gọi command này đc
         public async Task Ping()

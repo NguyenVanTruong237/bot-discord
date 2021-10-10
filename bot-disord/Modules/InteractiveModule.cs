@@ -20,6 +20,7 @@ namespace bot_disord.Modules
         // DeleteAfterAsync will send a message and asynchronously delete it after the timeout has popped
         // This method will not block.
         [Command("delete")]
+        [RequireRole("test")]
         public async Task<RuntimeResult> Test_DeleteAfterAsync()
         {
             await ReplyAndDeleteAsync("this message will delete in 10 seconds", timeout: new TimeSpan(0,0,10));
@@ -30,6 +31,7 @@ namespace bot_disord.Modules
         // By default, this will be limited to messages from the source user in the source channel
         // This method will block the gateway, so it should be ran in async mode.
         [Command("next", RunMode = RunMode.Async)]
+        [RequireRole("test")]
         public async Task Test_NextMessageAsync()
         {
             await ReplyAsync("What is 2+2?");
@@ -46,6 +48,7 @@ namespace bot_disord.Modules
         // This method will not block.
         [Command("paginator")]
         [Summary("test")]
+        [RequireRole("test")]
         public async Task Test_Paginator()
         {
             var pages = new[] { "Page 1", "Page 2", "Page 3", "aaaaaa", "Page 5" };
