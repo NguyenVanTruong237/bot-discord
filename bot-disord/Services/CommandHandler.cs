@@ -121,6 +121,17 @@ namespace bot_disord.Services
             if (!(socketMessage is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;
 
+            string[] filters = new string[] { "cac", "clmm", "dmm" };
+
+            if (message.Content.Split("").Intersect(filters).Any())
+            {
+                await message.DeleteAsync();
+                await message.Channel
+                    .SendMessageAsync($"{message.Author.Mention} Bạn chat từ bị cấm trong sever");
+                return;
+            }
+
+            //anti invite link another discord sever
             if (message.Content.Contains("https://discord.gg/"))
             {
                 if ((message.Channel as SocketGuildChannel).Guild.GetUser(message.Author.Id).GuildPermissions.Administrator)
@@ -130,14 +141,14 @@ namespace bot_disord.Services
                         .SendMessageAsync($"{message.Author.Mention} Đừng gửi link group khác vào đây");
                 }
             }
+            //anti spam
+            //if (message.Content == previousMessage)
+            //{
+            //    await message.DeleteAsync();
+            //    await message.Channel.SendMessageAsync($"{message.Author.Mention} Vui lòng không spam.");
+            //}
 
-            if (message.Content == previousMessage)
-            {
-                await message.DeleteAsync();
-                await message.Channel.SendMessageAsync($"{message.Author.Mention} Vui lòng không spam.");
-            }
-
-            previousMessage = message.Content;
+            //previousMessage = message.Content;
 
             var argPos = 0;
             if (!message.HasStringPrefix(_config["prefix"], ref argPos)
