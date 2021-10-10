@@ -126,6 +126,8 @@ namespace bot_disord.Services
 
             var context = new SocketCommandContext(_client, message);
             await _service.ExecuteAsync(context, argPos, _provider);
+
+
         }
     }
 }

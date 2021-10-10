@@ -1,8 +1,11 @@
-﻿using Discord;
+﻿using bot_disord.Utilities;
+using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +15,15 @@ namespace bot_disord.Modules
     public class Configuration : ModuleBase<SocketCommandContext>
     {
         private readonly Severs _servers;
+        private readonly Images _images;
 
-        public Configuration(Severs severs)
+
+        public Configuration(Severs severs, Images images)
         {
 
             _servers = severs;
+            _images = images;
+
         }
 
         [Command("welcome")]
@@ -68,7 +75,7 @@ namespace bot_disord.Modules
                 }
 
                 await _servers.ModifyWelcomeAsync(Context.Guild.Id, parsedId);
-                await ReplyAsync($"Set channel thành để welcome thành công {parsedChannel.Mention}.");
+                await ReplyAsync($"Set channel để welcome thành công {parsedChannel.Mention}.");
                 return;
             }
 
@@ -94,6 +101,23 @@ namespace bot_disord.Modules
             }
 
             await ReplyAsync("Sai command, nhập thêm # channel cần set vào");
+        }
+
+        [Command("image", RunMode = RunMode.Async)]
+        public async Task Image(SocketGuildUser user)
+        {
+            var path = await _images.CreateImageAsync(user);
+            await Context.Channel.SendFileAsync(path);
+            File.Delete(path);
+        }
+
+        [Command("ping")]
+        [Alias("p")] //command ghi tắt
+        [RequireUserPermission(GuildPermission.Administrator)] //chỉ admin mới gọi command này đc
+        public async Task Ping()
+        {
+            await Context.Channel.SendMessageAsync("Pong!");
+            await Context.User.SendMessageAsync("Private Message!"); // gửi tin nhắn private cho user
         }
     }
 }

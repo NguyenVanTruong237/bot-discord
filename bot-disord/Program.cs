@@ -2,6 +2,7 @@
 using bot_disord.Utilities;
 using Discord;
 using Discord.Addons.Hosting;
+using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 using Infrastructure;
@@ -59,6 +60,7 @@ namespace bot_disord
                     services.AddDbContext<ApplicationDbContext>();
                     services.AddSingleton<Severs>();
                     services.AddSingleton<Images>();
+                    services.AddSingleton<InteractiveService>();
                 })
                 .UseConsoleLifetime();
             var host = builder.Build();

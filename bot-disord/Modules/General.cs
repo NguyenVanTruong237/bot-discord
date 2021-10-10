@@ -3,10 +3,12 @@ using bot_disord.Utilities;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,21 +18,13 @@ namespace bot_disord.Modules
     {
         private readonly Images _images;
 
-        public General(Images images)
+        public General(Images images, CommandService service)
         {
             _images = images;
         }
 
-        [Command("ping")]
-        [Alias("p")] //command ghi tắt
-        [RequireUserPermission(GuildPermission.Administrator)] //chỉ admin mới gọi command này đc
-        public async Task Ping()
-        {
-            await Context.Channel.SendMessageAsync("Pong!");
-            await Context.User.SendMessageAsync("Private Message!"); // gửi tin nhắn private cho user
-        }
-
         [Command("info")]
+        [Summary("Xem info của bạn và người khác, !info @name .")]
         public async Task Info(SocketGuildUser socketGuidUser = null)
         {
             if (socketGuidUser == null)
@@ -52,6 +46,7 @@ namespace bot_disord.Modules
         }
         
         [Command("Sever")]
+        [Summary("Xem thông tin sever")]
         public async Task Sever()
         {
             var builder = new MyBotEmbedBuilder()
@@ -67,14 +62,26 @@ namespace bot_disord.Modules
             await Context.Channel.SendMessageAsync(null, false, embed);
         }
 
-
-        [Command("image", RunMode =RunMode.Async)]
-        public async Task Image(SocketGuildUser user)
+        [Command("meme")]
+        [Summary("Meme trên reddit")]
+        public async Task Meme()
         {
-            var path = await _images.CreateImageAsync(user);
-            await Context.Channel.SendFileAsync(path);
-            File.Delete(path);
+            var client = new HttpClient();
+            var result = await client.GetStringAsync("https://reddit.com/r/memes/random.json?Limit=1");
+            JArray arr = JArray.Parse(result);
+            JObject post = JObject.Parse(arr[0]["data"]["children"][0]["data"].ToString()); //lấy 1 json data chuyển về string
+
+            var builder = new MyBotEmbedBuilder()
+                .WithImageUrl(post["url"].ToString())
+                .WithTitle(post["title"].ToString())
+                .WithUrl("https://reddit.com" + post["permalink"].ToString())
+                .WithFooter($"🗨{post["num_comments"]} ⬆️ {post["up"]}");
+
+            var embed = builder.Build();
+            await Context.Channel.SendMessageAsync(null, false, embed);
+
         }
+
 
     }
 }
