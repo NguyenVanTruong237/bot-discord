@@ -121,8 +121,8 @@ namespace bot_disord.Services
             if (!(socketMessage is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;
 
+            //anti toxic chat
             string[] filters = new string[] { "cac", "clmm", "dmm" };
-
             if (message.Content.Split("").Intersect(filters).Any())
             {
                 await message.DeleteAsync();
