@@ -25,6 +25,7 @@ namespace bot_disord.Services
         private readonly IConfiguration _config;
         private readonly Severs _severs;
         private readonly Images _images;
+        private string previousMessage;
 
         public CommandHandler(IServiceProvider provider
             , DiscordSocketClient client
@@ -119,6 +120,24 @@ namespace bot_disord.Services
         {
             if (!(socketMessage is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;
+
+            if (message.Content.Contains("https://discord.gg/"))
+            {
+                if ((message.Channel as SocketGuildChannel).Guild.GetUser(message.Author.Id).GuildPermissions.Administrator)
+                {
+                    await message.DeleteAsync();
+                    await message.Channel
+                        .SendMessageAsync($"{message.Author.Mention} Đừng gửi link group khác vào đây");
+                }
+            }
+
+            if (message.Content == previousMessage)
+            {
+                await message.DeleteAsync();
+                await message.Channel.SendMessageAsync($"{message.Author.Mention} Vui lòng không spam.");
+            }
+
+            previousMessage = message.Content;
 
             var argPos = 0;
             if (!message.HasStringPrefix(_config["prefix"], ref argPos)

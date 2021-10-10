@@ -58,7 +58,7 @@ namespace bot_disord.Modules
             List<string> Pages = new List<string>();
 
                 var modules = _service.Modules.FirstOrDefault(c => c.Name == "General");
-            string page = "1 xíu đồ chơi sương sương 😆.\n";
+                string page = "1 xíu đồ chơi sương sương 😆.\n";
 
                 foreach (var command in modules.Commands )
                 {
