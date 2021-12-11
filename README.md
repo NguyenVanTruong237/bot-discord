@@ -1,4 +1,4 @@
-# bot-disord
+# bot-discord
 - Command get info user (!info) and info sever (!sever)
 - Command meme (!meme) with api reddit
 - !(help) show list command with page
