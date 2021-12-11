@@ -1,5 +1,8 @@
-﻿using Discord.Addons.Interactive;
+﻿using bot_disord.Common;
+using Discord;
+using Discord.Addons.Interactive;
 using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +23,7 @@ namespace bot_disord.Modules
         // DeleteAfterAsync will send a message and asynchronously delete it after the timeout has popped
         // This method will not block.
         [Command("delete")]
-        [RequireRole("test")]
+        [RequireRole("Admin")]
         public async Task<RuntimeResult> Test_DeleteAfterAsync()
         {
             await ReplyAndDeleteAsync("this message will delete in 10 seconds", timeout: new TimeSpan(0,0,10));
@@ -70,6 +73,38 @@ namespace bot_disord.Modules
                 Pages.Add(page);
 
             await PagedReplyAsync(Pages);
+        }
+
+        [Command("guild")]
+       // [RequireRole("Admin")]
+        public async Task GuildEvent()
+        {
+            var builder = new MyBotEmbedBuilder()
+                .WithThumbnailUrl(Context.Guild.IconUrl)
+                .WithDescription("🍀 The guild only for member in alpha test 🍀" +
+                "\n🌈 Chat the name of guild you want join 🌈\n" +
+                "💫 The mod will verify and add you in your guild selected 💫")
+                .WithTitle($"🎉 WELCOME TO GUILD IN FARM ME 🎉").WithUrl("https://farmme.io/")
+                .AddField("GUILD LIST", "⬇️⬇️⬇️⬇️")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍑 peaches-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🌽 corn-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🥔 potato-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍇 grape-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍓 strawberry-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍅 persimmon-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍌 banana-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🥕 carrot-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍊 orange-guild")
+                .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍋 lemon-guild"+ "\n ⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤")
+                .AddField("🎯 Explore more about our social channels 🎯",
+                "[📌 Fanpage](https://www.facebook.com/FarmMeOfficial)\n" +
+                "[📌 Twitter](https://twitter.com/FarmMeOfficiall)\n" +
+                "[📌 Youtube](https://www.youtube.com/c/FarmMeOfficial)\n" +
+                "[📌 Telegram Global Group](https://t.me/farmmeOFFICIALGlobal)\n" +
+                "[📌 Medium](https://farmme.medium.com/)\n")
+                .WithColor(new Color(0, 255, 136));
+            var embed = builder.Build();
+            await Context.Channel.SendMessageAsync(null, false, embed);
         }
     }
 }
