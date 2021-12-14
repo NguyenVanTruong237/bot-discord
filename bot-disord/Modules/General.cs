@@ -82,6 +82,27 @@ namespace bot_disord.Modules
 
         }
 
+        [Command("bit")]
+        [Summary("Meme trên reddit")]
+        public async Task BitCoin()
+        {
+            var client = new HttpClient();
+
+            var result = await client.GetStringAsync("https://api.blockchain.com/v3/exchange/l2/BTC-USD");
+            var objects = JObject.Parse(result);
+
+            var post = objects["bids"][0];
+
+            var builder = new MyBotEmbedBuilder()
+                .WithTitle("BTC-USD")
+                .AddField("$: ", post["px"].ToString())
+                .AddField("BTC: ", post["num"].ToString());
+
+            var embed = builder.Build();
+            await Context.Channel.SendMessageAsync(null, false, embed);
+
+        }
+
 
     }
 }
