@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -76,15 +77,17 @@ namespace bot_disord.Modules
         }
 
         [Command("guild")]
-       // [RequireRole("Admin")]
+      //  [RequireRole("Admin")]
         public async Task GuildEvent()
         {
             var builder = new MyBotEmbedBuilder()
                 .WithThumbnailUrl(Context.Guild.IconUrl)
                 .WithDescription("🍀 The guild only for member in alpha test 🍀" +
-                "\n🌈 Chat the name of guild you want join 🌈\n" +
-                "💫 The mod will verify and add you in your guild selected 💫")
-                .WithTitle($"🎉 WELCOME TO GUILD IN FARM ME 🎉").WithUrl("https://farmme.io/")
+                "\n🌈 React emoji by emoji of your guild to join. 🌈" +
+                "\n💐 Example you want join peaches guild, react emoji 🍑" +
+                "\n⚠️ After react you will get role non verify ⚠️" +
+                "\n💫 The mod will verify and give to you role member official of guild")
+                .WithTitle($"🎉 Welcome to the Farm Me Guild Community 🎉").WithUrl("https://farmme.io/")
                 .AddField("GUILD LIST", "⬇️⬇️⬇️⬇️")
                 .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍑 peaches-guild")
                 .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🌽 corn-guild")
@@ -96,15 +99,39 @@ namespace bot_disord.Modules
                 .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🥕 carrot-guild")
                 .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍊 orange-guild")
                 .AddField("⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤", "🍋 lemon-guild"+ "\n ⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤")
-                .AddField("🎯 Explore more about our social channels 🎯",
+                .AddField("🎯 Explore more about our social channels 🎯",           
                 "[📌 Fanpage](https://www.facebook.com/FarmMeOfficial)\n" +
                 "[📌 Twitter](https://twitter.com/FarmMeOfficiall)\n" +
                 "[📌 Youtube](https://www.youtube.com/c/FarmMeOfficial)\n" +
                 "[📌 Telegram Global Group](https://t.me/farmmeOFFICIALGlobal)\n" +
                 "[📌 Medium](https://farmme.medium.com/)\n")
+                
                 .WithColor(new Color(0, 255, 136));
             var embed = builder.Build();
             await Context.Channel.SendMessageAsync(null, false, embed);
         }
+
+
+        [Command("testcai")]
+        public async Task FeedBack([Remainder] string feedBackRequest = null)
+        {
+            //var channelIdFeedBackId = await _severs.GetChannelFeedback(Context.Guild.Id);
+            var channel = Context.Guild.GetTextChannel(Context.Channel.Id);
+
+            var image = Context.Message.Attachments.FirstOrDefault();
+
+            if (feedBackRequest == null && image == null)
+            {
+                return;
+            }
+            var embed = new EmbedBuilder()
+               .WithTitle($"Feedback from {Context.User.Username}")
+               .WithDescription(feedBackRequest)
+               .WithColor(new Color(216, 86, 62))
+               .WithImageUrl(image.Url) 
+               .Build();
+            await channel.SendMessageAsync(null, false, embed);
+        }
     }
 }
+      
