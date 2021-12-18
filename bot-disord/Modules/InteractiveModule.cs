@@ -124,11 +124,12 @@ namespace bot_disord.Modules
             {
                 return;
             }
+
             var embed = new EmbedBuilder()
                .WithTitle($"Feedback from {Context.User.Username}")
                .WithDescription(feedBackRequest)
                .WithColor(new Color(216, 86, 62))
-               .WithImageUrl(image.Url) 
+               .WithImageUrl(image == null ? " ": image.Url) 
                .Build();
             await channel.SendMessageAsync(null, false, embed);
         }
