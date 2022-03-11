@@ -16,11 +16,10 @@ namespace bot_disord.Modules
 {
     public class General : ModuleBase<SocketCommandContext>
     {
-        private readonly Images _images;
-
-        public General(Images images, CommandService service)
+        [Command("ping")]
+        public async Task PingAsync()
         {
-            _images = images;
+            await ReplyAsync("Pong");
         }
 
         [Command("info")]
@@ -83,7 +82,6 @@ namespace bot_disord.Modules
         }
 
         [Command("bit")]
-        [Summary("Meme trên reddit")]
         public async Task BitCoin()
         {
             var client = new HttpClient();
@@ -100,9 +98,6 @@ namespace bot_disord.Modules
 
             var embed = builder.Build();
             await Context.Channel.SendMessageAsync(null, false, embed);
-
         }
-
-
     }
 }

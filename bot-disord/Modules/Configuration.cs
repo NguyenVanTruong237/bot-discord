@@ -108,18 +108,17 @@ namespace bot_disord.Modules
         public async Task Image(SocketGuildUser user)
         {
             var path = await _images.CreateImageAsync(user);
-            await Context.Channel.SendFileAsync(path);
+            var channel = Context.Guild.Channels.FirstOrDefault(c => c.Id == 895954254676787200).Id;
+            await Context.Channel.SendMessageAsync($"Hi {user.Mention}, welcome to {user.Guild.Name}, news at <#{channel}>");
+            //await Context.Channel.SendFileAsync(path);
+            await Context.Channel.SendFileAsync("D:\\banhxeo.jpg");
             File.Delete(path);
         }
 
         [Command("ping")]
-        [RequireRole("test")]
-        [Alias("p")] //command ghi tắt
-        [RequireUserPermission(GuildPermission.Administrator)] //chỉ admin mới gọi command này đc
-        public async Task Ping()
+        public async Task PingAsync()
         {
-            await Context.Channel.SendMessageAsync("Pong!");
-            await Context.User.SendMessageAsync("Private Message!"); // gửi tin nhắn private cho user
+            await ReplyAsync("Pong");
         }
     }
 }

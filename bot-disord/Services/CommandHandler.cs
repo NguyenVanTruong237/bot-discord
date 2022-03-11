@@ -5,19 +5,22 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Infrastructure;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Infrastructure.ApplicationDbContext;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace bot_disord.Services
 {
-    public class CommandHandler : InitializedService
+    public class CommandHandler : DiscordClientService
     {
         private readonly IServiceProvider _provider;
         private readonly DiscordSocketClient _client;
@@ -32,7 +35,8 @@ namespace bot_disord.Services
             , CommandService service
             , IConfiguration config
             ,Severs severs
-            ,Images images)
+            ,Images images
+            , ILogger<CommandHandler> logger) : base(client, logger)
         {
             _provider = provider;
             _config = config;
@@ -40,62 +44,29 @@ namespace bot_disord.Services
             _service = service;
             _severs = severs;
             _images = images;
-        }
+        } 
 
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _client.MessageReceived += OnMessageReceived;
-            //_client.ChannelCreated += OnChannelCreated;
-            _client.UserJoined += OnUserJoined;
-
-
-            //_client.ReactionAdded += OnReactionAdded;       
+            //_client.ReactionAdded += OnReactionAdded;
+            //_client.UserJoined += OnJoinedGuid;
 
             _service.CommandExecuted += OnCommandExecuted;
+
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
         }
 
-        private async Task OnUserJoined(SocketGuildUser arg)
+        private async Task OnJoinedGuid(SocketGuildUser arg)
         {
-            var newTask = new Task(async () => await HandleUserJoined(arg));
-            newTask.Start();
+            throw new NotImplementedException();
         }
 
-        private async Task HandleUserJoined(SocketGuildUser arg)
+        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
         {
-            var channelId = await _severs.GetWelcomeAsync(arg.Guild.Id);
-            if (channelId == 0)
-            {
-                return;
-            }
-
-            var channel = arg.Guild.GetTextChannel(channelId);
-            if (channel == null)
-            {
-                await _severs.ClearWelcomeAsync(arg.Guild.Id);
-                return;
-            }
-            var background = await _severs.GetBackgroundAsync(arg.Guild.Id);
-            var path = await _images.CreateImageAsync(arg, background);
-
-            await channel.SendFileAsync(path, null);
-            File.Delete(path);
-
+            throw new NotImplementedException();
         }
 
-        //private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
-        //{
-        //    if (arg3.MessageId != 895866399568842832) return;
-        //    if (arg3.Emote.Name != "💩") return;
-
-        //    var role = (arg2 as SocketGuildChannel).Guild.Roles.FirstOrDefault(c => c.Id == 895652719241625661);
-        //    await (arg3.User.Value as SocketGuildUser).AddRoleAsync(role);
-        //}
-
-        private async Task OnJoinedGuid(SocketGuild arg)
-        {
-            await arg.DefaultChannel.SendMessageAsync("Thanks for using.");
-        }
 
         //private async Task OnChannelCreated(SocketChannel arg)  //event tạo channel text
         //{
@@ -106,49 +77,21 @@ namespace bot_disord.Services
 
         //}
 
-        private async Task OnCommandExecuted(Optional<CommandInfo> commandInfo  //thực thi command
+        private async Task OnCommandExecuted(Optional<CommandInfo> commandInfo  //check command đã success hay chưa
             ,ICommandContext commandContext,
             IResult result)
         {
-            if (result.IsSuccess)
-            {
+            Logger.LogInformation("User {user} attempted to use command {command}", commandContext.User, commandInfo.Value.Name);
+
+            if (!commandInfo.IsSpecified || result.IsSuccess)
                 return;
-            }
-            await commandContext.Channel.SendMessageAsync(result.ErrorReason);
+
+            await commandContext.Channel.SendMessageAsync($"Error: {result}");
         }
-        private async Task OnMessageReceived(SocketMessage socketMessage)   // nhận message từ user
+        private async Task OnMessageReceived(SocketMessage socketMessage)   // Check nhận message từ user or bot
         {
             if (!(socketMessage is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;
-
-            //anti toxic chat
-            string[] filters = new string[] { "cac", "clmm", "dmm" };
-            if (message.Content.Split("").Intersect(filters).Any())
-            {
-                await message.DeleteAsync();
-                await message.Channel
-                    .SendMessageAsync($"{message.Author.Mention} Bạn chat từ bị cấm trong sever");
-                return;
-            }
-
-            //anti invite link another discord sever
-            if (message.Content.Contains("https://discord.gg/"))
-            {
-                if ((message.Channel as SocketGuildChannel).Guild.GetUser(message.Author.Id).GuildPermissions.Administrator)
-                {
-                    await message.DeleteAsync();
-                    await message.Channel
-                        .SendMessageAsync($"{message.Author.Mention} Đừng gửi link group khác vào đây");
-                }
-            }
-            //anti spam
-            //if (message.Content == previousMessage)
-            //{
-            //    await message.DeleteAsync();
-            //    await message.Channel.SendMessageAsync($"{message.Author.Mention} Vui lòng không spam.");
-            //}
-
-            //previousMessage = message.Content;
 
             var argPos = 0;
             if (!message.HasStringPrefix(_config["prefix"], ref argPos)
