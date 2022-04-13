@@ -49,34 +49,12 @@ namespace bot_disord.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _client.MessageReceived += OnMessageReceived;
-            //_client.ReactionAdded += OnReactionAdded;
-            //_client.UserJoined += OnJoinedGuid;
-
             _service.CommandExecuted += OnCommandExecuted;
 
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
         }
 
-        private async Task OnJoinedGuid(SocketGuildUser arg)
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        //private async Task OnChannelCreated(SocketChannel arg)  //event tạo channel text
-        //{
-        //    if ((arg as ITextChannel) == null) return;
-
-        //    var channel = arg as ITextChannel;
-        //    await channel.SendMessageAsync("The event test called");
-
-        //}
-
+        
         private async Task OnCommandExecuted(Optional<CommandInfo> commandInfo  //check command đã success hay chưa
             ,ICommandContext commandContext,
             IResult result)

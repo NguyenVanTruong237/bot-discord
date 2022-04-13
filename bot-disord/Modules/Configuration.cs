@@ -115,10 +115,6 @@ namespace bot_disord.Modules
             File.Delete(path);
         }
 
-        [Command("ping")]
-        public async Task PingAsync()
-        {
-            await ReplyAsync("Pong");
-        }
+        
     }
 }

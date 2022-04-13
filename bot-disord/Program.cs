@@ -2,7 +2,6 @@
 using bot_disord.Utilities;
 using Discord;
 using Discord.Addons.Hosting;
-using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 using Infrastructure;
@@ -33,6 +32,7 @@ var host = Host.CreateDefaultBuilder(args)
         config.SocketConfig = new DiscordSocketConfig
         {
             GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildBans,
+            UseInteractionSnowflakeDate = false,
             LogLevel = LogSeverity.Verbose,
             AlwaysDownloadUsers = true,
             MessageCacheSize = 200
@@ -56,13 +56,10 @@ var host = Host.CreateDefaultBuilder(args)
     {
         //Add any other services here
         services.AddHostedService<CommandHandler>();
+        services.AddHostedService<InteractionHandler>();
         services.AddDbContext<ApplicationDbContext>();
         services.AddSingleton<Images>();
         services.AddSingleton<Severs>();
-        //services.AddSingleton<ModifyMessageReact>();
-        //services.AddHostedService<InteractionHandler>();
-        //services.AddHostedService<BotStatusService>();
-        //services.AddHostedService<LongRunningService>();
     })
     .UseConsoleLifetime().Build();
 

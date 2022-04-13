@@ -19,6 +19,9 @@ namespace bot_disord.Modules
         [Command("ping")]
         public async Task PingAsync()
         {
+            await Context.Channel.SendFileAsync("D:\\test.png");
+
+
             await ReplyAsync("Pong");
         }
 
